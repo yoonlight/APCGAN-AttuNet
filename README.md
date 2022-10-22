@@ -12,6 +12,13 @@ The image folder contains all the data utilized in this part. In the images flod
 | cracks-gan      |                original + gan                  |  
 | cracks-tradition|         original + traditional augmentation    |         
 
+## Models:
+All the models are in the model file.
+
+AttuNet
+
+
+
 
 ## Run Order:
 1. Create the environment with conda env create: 
@@ -22,3 +29,6 @@ You can also update an environment to make sure it meets the current requirement
 ```python 
 conda env update -f environment.yml
 ```
+2. Run the APCGAN
+
+3. Run the train.py file.
