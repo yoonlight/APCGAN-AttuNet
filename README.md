@@ -1,7 +1,7 @@
 APCGAN-AttuNet
 
 
-In the images floder, there contains three sub-floders: 
+The image folder contains all the data utilized in this part. In the images floder, there contains three sub-floders: 
 
 
 | subfolders      | info                                           |      
