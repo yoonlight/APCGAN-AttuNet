@@ -21,7 +21,7 @@ AttuNet
 
 
 ## Run Order:
-1. Create the environment with conda env create: 
+1. Create the environment in your terminal: 
 ```python 
 conda env create -f environment.yml 
 ```
