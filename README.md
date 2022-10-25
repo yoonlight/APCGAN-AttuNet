@@ -6,11 +6,12 @@ APCGAN-AttuNet
 The image folder contains all the data utilized in this part. In the images floder, there contains three sub-floders: 
 
 
-| subfolders      | info                                           |      
-| ------------    | -------------                                  |
-| cracks          |      300 original images from [DeepCrack](https://github.com/yhlleo/DeepCrack)        |       
-| cracks-gan      |                original + gan                  |  
-| cracks-tradition|         original + traditional augmentation    |         
+| subfolders      | info                                           |   training |   testing|
+| ------------    | -------------                                  |--------|-------|
+| cracks          | 587 original images from [DeepCrack](https://github.com/yhlleo/DeepCrack)| 300 for training |287 |
+| cracks-tradition|original + traditional augmentation    | 300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images from DCGAN |287 |
+| cracks-DCGAN     |        |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images from DCGAN |287 |  
+| cracks-APC-GAN|        | 300  from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images + APCGAN    |287 |        
 
 ## Models:
 All the models are in the model file.
@@ -29,6 +30,21 @@ You can also update an environment to make sure it meets the current requirement
 ```python 
 conda env update -f environment.yml
 ```
-2. Run the APCGAN
+2. Data Augmentation:
 
-3. Run the train.py file.
+2.1 Random Crop
+
+2.2 DCGAN
+
+2.3 APC-GAN
+
+
+3. Deep Learning:
+
+3.1 AttuNet
+
+3.2 AttuNet-min
+
+3.3 U-Net
+
+3.4 
