@@ -6,13 +6,14 @@ APCGAN-AttuNet
 The image folder contains all the data utilized in this part. In the images floder, there contains three sub-floders: 
 
 
-| subfolders      | info                                           |   training |   testing|
-| ------------    | -------------                                  |--------|-------|
-| cracks          | 587 original images from [DeepCrack](https://github.com/yhlleo/DeepCrack)| 300 for training |287 |
-| cracks-tradition|original + traditional augmentation    | 300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images from DCGAN |287 |
-| cracks-DCGAN     |        |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images from DCGAN |287 |  
-| cracks-APC-GAN|        | 300  from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images + APCGAN    |287 |        
+| subfolders      | info                                           |   training | 
+| :------------:   | :-------------:                                  |:--------:|
+| cracks          | 587 original images from [DeepCrack](https://github.com/yhlleo/DeepCrack)| 300 from [DeepCrack](https://github.com/yhlleo/DeepCrack)|
+| cracks-tradition| traditional augmentation   |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images from traditional augmentation |
+| cracks-DCGAN     |   DCGAN     |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images from DCGAN |
+| cracks-APC-GAN|    APC-GAN    | 300  from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images + APCGAN    |      
 
+The **testing data** are all from the DeepCrack which contains **287** crack images.
 ## Models:
 All the models are in the model file.
 
