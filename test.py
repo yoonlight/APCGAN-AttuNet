@@ -63,14 +63,14 @@ def cal_miou(test_dir="./images/cracks/Test_Images",
 
         print("Load model.")
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        # 加载网络，图片单通道，分类为1。
+
         # net = UNet(n_channels=1, n_classes=1)
         # net = AttU_Net(img_ch=1, output_ch=1)
-        # net = AttU_Net(img_ch=1, output_ch=1)
+        net = AttU_Net(img_ch=1, output_ch=1) # todo: change the model
         # net = deeplabv3_resnet50(num_classes=1)
         # net = fcn_resnet50(num_classes=1)
         # net.backbone.conv1 = Conv2d(1, 64, kernel_size=(7, 7), stride=(2, 2), padding=(3, 3), bias=False)
-        net = ENet(num_classes=1, in_channels=1)
+        # net = ENet(num_classes=1, in_channels=1)
 
         # net = lraspp_mobilenet_v3_large(num_classes=1)
         # #
