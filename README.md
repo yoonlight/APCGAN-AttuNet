@@ -97,13 +97,26 @@ After get the generated images, annotate these images manually and then put them
 1.3 you will get a **best_model.pth** after you run the **train.py**.
 
 2. Run the **test.py**
+
+do some modifications when you run the test.py:
 ```python 
+ net = AttU_Net(img_ch=1, output_ch=1) # todo: change the model refering to your trained model
+ ...
+
  net.load_state_dict(torch.load('best_model.pth', map_location=device)) # todo
  # todo: make you load your best_model.pth
 ```
 2.1 you will get the evaluation results of your model in the **results** folder.
 
-### By doing these above, you finished a model setup and evaluation. Then, you can do the same steps on all the models.Aand compare the evalution metrics among models.
+
+PS: when taining model **fcn_resnet50** ,**deeplabv3_resnet50** , **lraspp_mobilenet_v3_large**, remember to modify the last layer, making it consistent with the classes in this work.
+
+---
+
+
+### By doing these above, you finished a model setup and evaluation. 
+### Then, you can do the same steps on all the models.
+### Finally, compare the evalution metrics among models.
 
 
 
