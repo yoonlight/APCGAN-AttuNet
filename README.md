@@ -12,7 +12,7 @@ The image folder contains all the data utilized in this part. In the images flod
 | :------------:   | :-------------:                                  |:--------:|
 | cracks          |  [DeepCrack](https://github.com/yhlleo/DeepCrack)(contains 587 images and their annotation)| 300 from [DeepCrack](https://github.com/yhlleo/DeepCrack)|
 | cracks-tradition| traditional augmentation   |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + 300 from traditional augmentation |
-| cracks-DCGAN     |   DCGAN     |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + 300  from DCGAN |
+| cracks-DCGAN     |   [DCGAN](https://github.com/soumith/dcgan.torch)     |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + 300  from [DCGAN](https://github.com/soumith/dcgan.torch) |
 | cracks-APCGAN|    APC-GAN    | 300  from [DeepCrack](https://github.com/yhlleo/DeepCrack) + 300 from APCGAN    |      
 
 The **testing data** are all from the DeepCrack which contains **287** crack images.
@@ -48,7 +48,7 @@ There are three ways to augment your training dataset in the **augmentation** fo
 run **random_crop.py** : images produced will be stored in augmentation/results/random_crop
 
 
-- DCGAN
+- [DCGAN](https://github.com/soumith/dcgan.torch)
 
 run **DCGAN.py** : generated real-like images will be stored in augmentation/results/DCGAN
 
