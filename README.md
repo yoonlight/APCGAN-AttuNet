@@ -63,7 +63,7 @@ After get the generated images, annotate these images manually and then put them
 
 1. run the **train.py**: 
 
-1.1  choose and replace a model you want to run first.
+1.1  choose and replace a model which you want to run.
 
 ```python 
 '''
