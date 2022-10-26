@@ -23,10 +23,10 @@ Models list (used in the paper):
 
 - AttuNet
 - AttuNet-min
-- U-Net
-- FCN
-- LRASPP
-- DeepLabv3
+- [U-Net](https://github.com/milesial/Pytorch-UNet)
+- [FCN](https://pytorch.org/vision/stable/models/generated/torchvision.models.segmentation.fcn_resnet50.html#torchvision.models.segmentation.fcn_resnet50)
+- [LRASPP](https://pytorch.org/vision/stable/models/generated/torchvision.models.segmentation.lraspp_mobilenet_v3_large.html#torchvision.models.segmentation.lraspp_mobilenet_v3_large)
+- [DeepLabv3](https://pytorch.org/vision/stable/models/generated/torchvision.models.segmentation.deeplabv3_resnet50.html#torchvision.models.segmentation.deeplabv3_resnet50)
 
 
 ## Run Order:
