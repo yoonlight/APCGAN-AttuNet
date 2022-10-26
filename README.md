@@ -61,9 +61,9 @@ After get the generated images, annotate these images manually and then put them
 
 ### Third, training different deep learning methods on the datasets.
 
-run the **train.py**: 
+1. run the **train.py**: 
 
-1.  choose and replace a model you want to run first.
+1.1  choose and replace a model you want to run first.
 
 ```python 
 '''
@@ -83,7 +83,7 @@ run the **train.py**:
 '''
 ```
 
-2. choose the training dataset
+1.2 choose the training dataset
 ```python 
   data_path = "./images/cracks" # todo: your training datasets
   '''
@@ -94,4 +94,18 @@ run the **train.py**:
   "./images/cracks_APCGAN"
   '''
 ```
+1.3 you will get a **best_model.pth** after you run the **train.py**.
+
+2. Run the **test.py**
+```python 
+ net.load_state_dict(torch.load('best_model.pth', map_location=device)) # todo
+ # todo: make you load your best_model.pth
+```
+2.1 you will get the evaluation results of your model in the **results** folder.
+
+
+
+
+
+
 
