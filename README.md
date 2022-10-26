@@ -9,9 +9,9 @@ The image folder contains all the data utilized in this part. In the images flod
 | subfolders      | info                                           |   training | 
 | :------------:   | :-------------:                                  |:--------:|
 | cracks          | 587 original images from [DeepCrack](https://github.com/yhlleo/DeepCrack)| 300 from [DeepCrack](https://github.com/yhlleo/DeepCrack)|
-| cracks-tradition| traditional augmentation   |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images from traditional augmentation |
-| cracks-DCGAN     |   DCGAN     |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images from DCGAN |
-| cracks-APC-GAN|    APC-GAN    | 300  from [DeepCrack](https://github.com/yhlleo/DeepCrack) + real-like images + APCGAN    |      
+| cracks-tradition| traditional augmentation   |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + 300 from traditional augmentation |
+| cracks-DCGAN     |   DCGAN     |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + 300  from DCGAN |
+| cracks-APC-GAN|    APC-GAN    | 300  from [DeepCrack](https://github.com/yhlleo/DeepCrack) + 300 from APCGAN    |      
 
 The **testing data** are all from the DeepCrack which contains **287** crack images.
 ## Models:
@@ -36,15 +36,15 @@ conda env update -f environment.yml
 
 In augmentation folder: 
 
-random_crop.py : random crop is used as a traditional image augmentation method and the images produced will be stored in augmentation/results/random_crop
+- random_crop.py : random crop is used as a traditional image augmentation method and the images produced will be stored in augmentation/results/random_crop
 
-DCGAN.py : use DCGAN method to generate real-like images which will be stored in augmentation/results/DCGAN
+- DCGAN.py : use DCGAN method to generate real-like images which will be stored in augmentation/results/DCGAN
 
-APCGAN.ipynb : use DCGAN method to generate real-like images which will be stored in augmentation/results/APCGAN
+- APCGAN.ipynb : use DCGAN method to generate real-like images which will be stored in augmentation/results/APCGAN
 
-After get the generated images, annotate these images 
+After get the generated images, annotate these images manually. and then put them into the training_images floders to eb used for deep-learning training.
 
-### Third, 
+### Third, training different deep learning methods on the datasets.
 
 
 3. Deep Learning:
