@@ -23,7 +23,8 @@ AttuNet
 
 
 ## Run Order:
-1. Create the environment in your terminal: 
+### First, setup the environment on your PC.
+ Create the environment in your terminal: 
 ```python 
 conda env create -f environment.yml 
 ```
@@ -31,9 +32,11 @@ You can also update an environment to make sure it meets the current requirement
 ```python 
 conda env update -f environment.yml
 ```
-2. Data Augmentation:
+### Second, augment the images amount.
 
-2.1 Random Crop
+- Random Crop
+
+
 
 2.2 DCGAN
 
