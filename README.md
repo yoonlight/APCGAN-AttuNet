@@ -108,6 +108,12 @@ do some modifications when you run the test.py:
 ```
 2.1 you will get the evaluation results of your model in the **results** folder.
 
+
+PS: when taining model **fcn_resnet50** ,**deeplabv3_resnet50** , **lraspp_mobilenet_v3_large**, remember to modify the last layer, making it consistent with the classes in this work.
+
+---
+
+
 ### By doing these above, you finished a model setup and evaluation. 
 ### Then, you can do the same steps on all the models.
 ### Finally, compare the evalution metrics among models.
