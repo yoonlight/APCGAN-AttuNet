@@ -103,7 +103,9 @@ After get the generated images, annotate these images manually and then put them
 ```
 2.1 you will get the evaluation results of your model in the **results** folder.
 
-### By doing these above, you finished a model setup and evaluation. Then, you can do the same steps on all the models.Aand compare the evalution metrics among models.
+### By doing these above, you finished a model setup and evaluation. 
+### Then, you can do the same steps on all the models.
+### Finally, compare the evalution metrics among models.
 
 
 
