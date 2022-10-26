@@ -5,7 +5,7 @@ This repo is worked as a computing artifact for **Tianjie Zhang**'s comprehensiv
 
 ## Data:
 
-The **images** folder contains all the data utilized in this part. In the images floder, there contains three sub-floders: 
+The **images** folder contains all the data utilized in this part. In the images floder, it contains four sub-floders: 
 
 
 | Subfolders      | Info                                           |   Training | 
