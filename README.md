@@ -1,6 +1,6 @@
 ## Introduction:
 
-This repo is worked as a computing artifact for Tianjie Zhang's comprehensive exam.
+This repo is worked as a computing artifact for **Tianjie Zhang**'s comprehensive exam.
 
 
 ## Data:
