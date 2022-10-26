@@ -1,4 +1,4 @@
-Introduction:
+## Introduction:
 
 This repo is worked as a computing artifact for Tianjie Zhang's comprehensive exam.
 
@@ -13,7 +13,7 @@ The image folder contains all the data utilized in this part. In the images flod
 | cracks          |  [DeepCrack](https://github.com/yhlleo/DeepCrack)(contains 587 images and their annotation)| 300 from [DeepCrack](https://github.com/yhlleo/DeepCrack)|
 | cracks-tradition| traditional augmentation   |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + 300 from traditional augmentation |
 | cracks-DCGAN     |   DCGAN     |300 from [DeepCrack](https://github.com/yhlleo/DeepCrack) + 300  from DCGAN |
-| cracks-APC-GAN|    APC-GAN    | 300  from [DeepCrack](https://github.com/yhlleo/DeepCrack) + 300 from APCGAN    |      
+| cracks-APCGAN|    APC-GAN    | 300  from [DeepCrack](https://github.com/yhlleo/DeepCrack) + 300 from APCGAN    |      
 
 The **testing data** are all from the DeepCrack which contains **287** crack images.
 
@@ -103,7 +103,7 @@ After get the generated images, annotate these images manually and then put them
 ```
 2.1 you will get the evaluation results of your model in the **results** folder.
 
-
+### By doing these above, you finished a model setup and evaluation. Then, you can do the same steps on all the models.Aand compare the evalution metrics among models.
 
 
 
