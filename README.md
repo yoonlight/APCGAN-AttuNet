@@ -34,13 +34,17 @@ conda env update -f environment.yml
 ```
 ### Second, augment the images amount.
 
-- Random Crop
+In augmentation folder: 
 
+random_crop.py : random crop is used as a traditional image augmentation method and the images produced will be stored in augmentation/results/random_crop
 
+DCGAN.py : use DCGAN method to generate real-like images which will be stored in augmentation/results/DCGAN
 
-2.2 DCGAN
+APCGAN.ipynb : use DCGAN method to generate real-like images which will be stored in augmentation/results/APCGAN
 
-2.3 APC-GAN
+After get the generated images, annotate these images 
+
+### Third, 
 
 
 3. Deep Learning:
