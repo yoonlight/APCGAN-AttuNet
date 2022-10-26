@@ -97,7 +97,12 @@ After get the generated images, annotate these images manually and then put them
 1.3 you will get a **best_model.pth** after you run the **train.py**.
 
 2. Run the **test.py**
+
+do some modifications when you run the test.py:
 ```python 
+ net = AttU_Net(img_ch=1, output_ch=1) # todo: change the model refering to your trained model
+ ...
+
  net.load_state_dict(torch.load('best_model.pth', map_location=device)) # todo
  # todo: make you load your best_model.pth
 ```
