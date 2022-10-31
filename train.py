@@ -98,6 +98,27 @@ def train_net(net, device, data_path, epochs=40, batch_size=1, lr=0.00001):
 if __name__ == "__main__":
     # 选择设备，有cuda用cuda，没有就用cpu
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    '''
+    Choose a deep learning method:
+
+    
+
+    1. net = AttU_Net(img_ch=1, output_ch=1)
+
+    2. net = AttU_Net_min(img_ch=1, output_ch=1)
+    
+    3. net = UNet(n_channels=1, n_classes=1)
+
+    4. net = fcn_resnet50(num_classes=1)
+
+    5.  net = deeplabv3_resnet50(num_classes= 1)
+
+    6. net = lraspp_mobilenet_v3_large(num_classes=1)
+
+
+
+    '''
     # 加载网络，图片单通道1，分类为1。
     # original net
     # net = UNet(n_channels=1, n_classes=1)  # todo edit input_channels n_classes
@@ -109,7 +130,7 @@ if __name__ == "__main__":
     # net = deeplabv3_resnet50(num_classes= 1)
 
     # net = fcn_resnet50(num_classes=1)
-    net = ENet(num_classes=1,in_channels=1)
+    net = AttU_Net(img_ch=1, output_ch=1)
 
 
     # net = lraspp_mobilenet_v3_large(num_classes=1)
@@ -128,5 +149,12 @@ if __name__ == "__main__":
     # 将网络拷贝到deivce中
     net.to(device=device)
     # 指定训练集地址，开始训练
-    data_path = "./images/cracks" # todo 修改为你本地的数据集位置
+    data_path = "./images/cracks" # todo: your training datasets
+    '''
+    four choices: 
+    "./images/cracks"
+    "./images/cracks_tradition"
+    "./images/cracks_DCGAN"
+    "./images/cracks_APCGAN"
+    '''
     train_net(net, device, data_path, epochs=300, batch_size=16)
