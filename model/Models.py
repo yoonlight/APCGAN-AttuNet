@@ -93,10 +93,7 @@ class up_conv(nn.Module):
 
 
 class U_Net(nn.Module):
-    """
-    UNet - Basic Implementation
-    Paper : https://arxiv.org/abs/1505.04597
-    """
+
     def __init__(self, in_ch=3, out_ch=1):
         super(U_Net, self).__init__()
 
@@ -170,131 +167,13 @@ class U_Net(nn.Module):
         return out
 
 
-class Recurrent_block(nn.Module):
-    """
-    Recurrent Block for R2Unet_CNN
-    """
-    def __init__(self, out_ch, t=2):
-        super(Recurrent_block, self).__init__()
-
-        self.t = t
-        self.out_ch = out_ch
-        self.conv = nn.Sequential(
-            nn.Conv2d(out_ch, out_ch, kernel_size=3, stride=1, padding=1, bias=True),
-            nn.BatchNorm2d(out_ch),
-            nn.ReLU(inplace=True)
-        )
-
-    def forward(self, x):
-        for i in range(self.t):
-            if i == 0:
-                x = self.conv(x)
-            out = self.conv(x + x)
-        return out
 
 
-class RRCNN_block(nn.Module):
-    """
-    Recurrent Residual Convolutional Neural Network Block
-    """
-    def __init__(self, in_ch, out_ch, t=2):
-        super(RRCNN_block, self).__init__()
-
-        self.RCNN = nn.Sequential(
-            Recurrent_block(out_ch, t=t),
-            Recurrent_block(out_ch, t=t)
-        )
-        self.Conv = nn.Conv2d(in_ch, out_ch, kernel_size=1, stride=1, padding=0)
-
-    def forward(self, x):
-        x1 = self.Conv(x)
-        x2 = self.RCNN(x1)
-        out = x1 + x2
-        return out
 
 
-class R2U_Net(nn.Module):
-    """
-    R2U-Unet implementation
-    Paper: https://arxiv.org/abs/1802.06955
-    """
-    def __init__(self, img_ch=3, output_ch=1, t=2):
-        super(R2U_Net, self).__init__()
-
-        n1 = 64
-        filters = [n1, n1 * 2, n1 * 4, n1 * 8, n1 * 16]
-
-        self.Maxpool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.Maxpool1 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.Maxpool2 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.Maxpool3 = nn.MaxPool2d(kernel_size=2, stride=2)
-
-        self.Upsample = nn.Upsample(scale_factor=2)
-
-        self.RRCNN1 = RRCNN_block(img_ch, filters[0], t=t)
-
-        self.RRCNN2 = RRCNN_block(filters[0], filters[1], t=t)
-
-        self.RRCNN3 = RRCNN_block(filters[1], filters[2], t=t)
-
-        self.RRCNN4 = RRCNN_block(filters[2], filters[3], t=t)
-
-        self.RRCNN5 = RRCNN_block(filters[3], filters[4], t=t)
-
-        self.Up5 = up_conv(filters[4], filters[3])
-        self.Up_RRCNN5 = RRCNN_block(filters[4], filters[3], t=t)
-
-        self.Up4 = up_conv(filters[3], filters[2])
-        self.Up_RRCNN4 = RRCNN_block(filters[3], filters[2], t=t)
-
-        self.Up3 = up_conv(filters[2], filters[1])
-        self.Up_RRCNN3 = RRCNN_block(filters[2], filters[1], t=t)
-
-        self.Up2 = up_conv(filters[1], filters[0])
-        self.Up_RRCNN2 = RRCNN_block(filters[1], filters[0], t=t)
-
-        self.Conv = nn.Conv2d(filters[0], output_ch, kernel_size=1, stride=1, padding=0)
-
-       # self.active = torch.nn.Sigmoid()
 
 
-    def forward(self, x):
 
-        e1 = self.RRCNN1(x)
-
-        e2 = self.Maxpool(e1)
-        e2 = self.RRCNN2(e2)
-
-        e3 = self.Maxpool1(e2)
-        e3 = self.RRCNN3(e3)
-
-        e4 = self.Maxpool2(e3)
-        e4 = self.RRCNN4(e4)
-
-        e5 = self.Maxpool3(e4)
-        e5 = self.RRCNN5(e5)
-
-        d5 = self.Up5(e5)
-        d5 = torch.cat((e4, d5), dim=1)
-        d5 = self.Up_RRCNN5(d5)
-
-        d4 = self.Up4(d5)
-        d4 = torch.cat((e3, d4), dim=1)
-        d4 = self.Up_RRCNN4(d4)
-
-        d3 = self.Up3(d4)
-        d3 = torch.cat((e2, d3), dim=1)
-        d3 = self.Up_RRCNN3(d3)
-
-        d2 = self.Up2(d3)
-        d2 = torch.cat((e1, d2), dim=1)
-        d2 = self.Up_RRCNN2(d2)
-
-        out = self.Conv(d2)
-
-      # out = self.active(out)
-
-        return out
 
 
 class Attention_block(nn.Module):
@@ -375,10 +254,7 @@ class Attention_block(nn.Module):
 
 
 class AttU_Net(nn.Module):
-    """
-    Attention Unet implementation
-    Paper: https://arxiv.org/abs/1804.03999
-    """
+
     def __init__(self, img_ch=3, output_ch=1):
         super(AttU_Net, self).__init__()
 
@@ -463,10 +339,7 @@ class AttU_Net(nn.Module):
 
 
 class AttU_Net_min(nn.Module):
-    """
-    Attention Unet implementation
-    Paper: https://arxiv.org/abs/1804.03999
-    """
+
     def __init__(self, img_ch=3, output_ch=1):
         super(AttU_Net_min, self).__init__()
 
@@ -557,10 +430,7 @@ class AttU_Net_min(nn.Module):
 
 
 class R2AttU_Net(nn.Module):
-    """
-    Residual Recuurent Block with attention Unet
-    Implementation : https://github.com/LeeJunHyun/Image_Segmentation
-    """
+
     def __init__(self, in_ch=3, out_ch=1, t=2):
         super(R2AttU_Net, self).__init__()
 
@@ -667,10 +537,7 @@ class conv_block_nested(nn.Module):
 #Nested Unet
 
 class NestedUNet(nn.Module):
-    """
-    Implementation of this paper:
-    https://arxiv.org/pdf/1807.10165.pdf
-    """
+  
     def __init__(self, in_ch=3, out_ch=1):
         super(NestedUNet, self).__init__()
 
@@ -727,8 +594,7 @@ class NestedUNet(nn.Module):
         output = self.final(x0_4)
         return output
 
-#Dictioary Unet
-#if required for getting the filters and model parameters for each step 
+
 
 class ConvolutionBlock(nn.Module):
     """Convolution block"""
@@ -827,157 +693,3 @@ class Unet_dict(nn.Module):
         u0 = F.relu(self.expansive_0(u1, c00))
         return F.softmax(self.output(u0), dim=1)
 
-#Need to check why this Unet is not workin properly 
-# 
-# class Convolution2(nn.Module):
-#     """Convolution Block using 2 Conv2D
-#     Args:
-#         in_channels = Input Channels
-#         out_channels = Output Channels
-#         kernal_size = 3
-#         activation = Relu
-#         batchnorm = True
-# 
-#     Output:
-#         Sequential Relu output """
-# 
-#     def __init__(self, in_channels, out_channels, kernal_size=3, activation='Relu', batchnorm=True):
-#         super(Convolution2, self).__init__()
-# 
-#         self.in_channels = in_channels
-#         self.out_channels = out_channels
-#         self.kernal_size = kernal_size
-#         self.batchnorm1 = batchnorm
-# 
-#         self.batchnorm2 = batchnorm
-#         self.activation = activation
-# 
-#         self.conv1 = nn.Conv2d(self.in_channels, self.out_channels, self.kernal_size,  padding=1, bias=True)
-#         self.conv2 = nn.Conv2d(self.out_channels, self.out_channels, self.kernal_size, padding=1, bias=True)
-# 
-#         self.b1 = nn.BatchNorm2d(out_channels)
-#         self.b2 = nn.BatchNorm2d(out_channels)
-# 
-#         if self.activation == 'LRelu':
-#             self.a1 = nn.LeakyReLU(inplace=True)
-#         if self.activation == 'Relu':
-#             self.a1 = nn.ReLU(inplace=True)
-# 
-#         if self.activation == 'LRelu':
-#             self.a2 = nn.LeakyReLU(inplace=True)
-#         if self.activation == 'Relu':
-#             self.a2 = nn.ReLU(inplace=True)
-# 
-#     def forward(self, x):
-#         x1 = self.conv1(x)
-# 
-#         if self.batchnorm1:
-#             x1 = self.b1(x1)
-# 
-#         x1 = self.a1(x1)
-# 
-#         x1 = self.conv2(x1)
-# 
-#         if self.batchnorm2:
-#             x1 = self.b1(x1)
-# 
-#         x = self.a2(x1)
-# 
-#         return x
-# 
-# 
-# class UNet(nn.Module):
-#     """Implementation of U-Net: Convolutional Networks for Biomedical Image Segmentation (Ronneberger et al., 2015)
-#         https://arxiv.org/abs/1505.04597
-#         Args:
-#             n_class = no. of classes"""
-# 
-#     def __init__(self, n_class, dropout=0.4):
-#         super(UNet, self).__init__()
-# 
-#         in_ch = 3
-#         n1 = 64
-#         n2 = n1*2
-#         n3 = n2*2
-#         n4 = n3*2
-#         n5 = n4*2
-# 
-#         self.dconv_down1 = Convolution2(in_ch, n1)
-#         self.dconv_down2 = Convolution2(n1, n2)
-#         self.dconv_down3 = Convolution2(n2, n3)
-#         self.dconv_down4 = Convolution2(n3, n4)
-#         self.dconv_down5 = Convolution2(n4, n5)
-# 
-#         self.maxpool1 = nn.MaxPool2d(2)
-#         self.maxpool2 = nn.MaxPool2d(2)
-#         self.maxpool3 = nn.MaxPool2d(2)
-#         self.maxpool4 = nn.MaxPool2d(2)
-# 
-#         self.upsample1 = nn.Upsample(scale_factor=2)#, mode='bilinear', align_corners=True)
-#         self.upsample2 = nn.Upsample(scale_factor=2)#, mode='bilinear', align_corners=True)
-#         self.upsample3 = nn.Upsample(scale_factor=2)#, mode='bilinear', align_corners=True)
-#         self.upsample4 = nn.Upsample(scale_factor=2)#, mode='bilinear', align_corners=True)
-# 
-#         self.dropout1 = nn.Dropout(dropout)
-#         self.dropout2 = nn.Dropout(dropout)
-#         self.dropout3 = nn.Dropout(dropout)
-#         self.dropout4 = nn.Dropout(dropout)
-#         self.dropout5 = nn.Dropout(dropout)
-#         self.dropout6 = nn.Dropout(dropout)
-#         self.dropout7 = nn.Dropout(dropout)
-#         self.dropout8 = nn.Dropout(dropout)
-# 
-#         self.dconv_up4 = Convolution2(n4 + n5, n4)
-#         self.dconv_up3 = Convolution2(n3 + n4, n3)
-#         self.dconv_up2 = Convolution2(n2 + n3, n2)
-#         self.dconv_up1 = Convolution2(n1 + n2, n1)
-# 
-#         self.conv_last = nn.Conv2d(n1, n_class, kernel_size=1, stride=1, padding=0)
-#       #  self.active = torch.nn.Sigmoid()
-# 
-# 
-# 
-#     def forward(self, x):
-#         conv1 = self.dconv_down1(x)
-#         x = self.maxpool1(conv1)
-#        # x = self.dropout1(x)
-# 
-#         conv2 = self.dconv_down2(x)
-#         x = self.maxpool2(conv2)
-#        # x = self.dropout2(x)
-# 
-#         conv3 = self.dconv_down3(x)
-#         x = self.maxpool3(conv3)
-#        # x = self.dropout3(x)
-# 
-#         conv4 = self.dconv_down4(x)
-#         x = self.maxpool4(conv4)
-#         #x = self.dropout4(x)
-# 
-#         x = self.dconv_down5(x)
-# 
-#         x = self.upsample4(x)
-#         x = torch.cat((x, conv4), dim=1)
-#         #x = self.dropout5(x)
-# 
-#         x = self.dconv_up4(x)
-#         x = self.upsample3(x)
-#         x = torch.cat((x, conv3), dim=1)
-#        # x = self.dropout6(x)
-# 
-#         x = self.dconv_up3(x)
-#         x = self.upsample2(x)
-#         x = torch.cat((x, conv2), dim=1)
-#         #x = self.dropout7(x)
-# 
-#         x = self.dconv_up2(x)
-#         x = self.upsample1(x)
-#         x = torch.cat((x, conv1), dim=1)
-#         #x = self.dropout8(x)
-# 
-#         x = self.dconv_up1(x)
-# 
-#         x = self.conv_last(x)
-#      #   out = self.active(x)
-# 
-#         return x
