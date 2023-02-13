@@ -1,6 +1,6 @@
 ## Introduction:
 
-This repo is worked as a computing artifact for **Tianjie Zhang**'s comprehensive exam. The related works have been published in IEEE-T-ITS.
+This repo is worked as a computing artifact for **Tianjie Zhang**'s comprehensive exam. The related works have been published in [IEEE-T-ITS](https://ieeexplore.ieee.org/abstract/document/10021216).
 
 
 ## Data:
