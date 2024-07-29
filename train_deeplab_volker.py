@@ -105,13 +105,13 @@ def train_net(net, device, data_path, val_data_path, result_path, dataset, expr_
             if val_loss < best_loss:
                 best_loss = val_loss
                 torch.save(net.state_dict(), model_file)
+                if epoch % 10 == 0:
+                    cal_miou(test_dir, pred_dir, gt_dir, miou_out_path, model_file)
 
             test_dir = f"datasets/seg/{dataset}/test/images"
             pred_dir = f"datasets/seg/{dataset}/{expr_name}/{expr_name}_images"
             gt_dir = f"datasets/seg/{dataset}/test/masks"
             miou_out_path = f"datasets/seg/{dataset}/{expr_name}/results/"
-            if epoch % 10 == 0:
-                cal_miou(test_dir, pred_dir, gt_dir, miou_out_path, model_file)
             pbar.set_postfix(loss=loss1, val_loss=val_loss)
             loss2.append(loss1)
     # writer.close()
