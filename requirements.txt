@@ -2,3 +2,5 @@ matplotlib
 pandas
 grad-cam
 tensorboard
+torchmetrics
+# lightning
