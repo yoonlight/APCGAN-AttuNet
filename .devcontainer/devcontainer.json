@@ -39,7 +39,8 @@
 				"mechatroner.rainbow-csv",
 				"mutantdino.resourcemonitor",
 				"ms-toolsai.tensorboard",
-				"ms-toolsai.datawrangler"
+				"ms-toolsai.datawrangler",
+				"github.copilot"
 			]
 		}
 	},
