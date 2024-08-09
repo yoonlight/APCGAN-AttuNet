@@ -11,7 +11,7 @@ import numpy as np
 
 
 
-class DeepCrackDataset(Dataset):
+class BCLDataset(Dataset):
     def __init__(self, data_path):
         # 初始化函数，读取所有data_path下的图片
         self.data_path = data_path
@@ -28,7 +28,6 @@ class DeepCrackDataset(Dataset):
         image_path = self.imgs_path[index]
         # 根据image_path生成label_path
         label_path = image_path.replace('images', 'masks')
-        label_path = label_path.replace('jpg', 'png')
 
         # 读取训练图片和标签图片
         # print(image_path)
@@ -68,7 +67,7 @@ class DeepCrackDataset(Dataset):
 
     
 if __name__ == "__main__":
-    isbi_dataset = DeepCrackDataset("../images/cracks")
+    isbi_dataset = BCLDataset("../images/cracks")
     img,label = isbi_dataset[1]
     print(label.shape)
 

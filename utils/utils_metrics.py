@@ -73,7 +73,7 @@ def per_Accuracy(hist):
     return np.sum(np.diag(hist)) / np.maximum(np.sum(hist), 1)
 
 
-def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes):
+def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes, dataset_name=None):
     print('Num classes', num_classes)
     # -----------------------------------------#
     #   创建一个全是0的矩阵，是一个混淆矩阵
@@ -84,8 +84,21 @@ def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes):
     #   获得验证集标签路径列表，方便直接读取
     #   获得验证集图像分割结果路径列表，方便直接读取
     # ------------------------------------------------#
-    gt_imgs = [join(gt_dir, x + ".png") for x in png_name_list]
-    pred_imgs = [join(pred_dir, x + ".png") for x in png_name_list]
+    if dataset_name == "Volker":
+        gt_imgs = [join(gt_dir, x + ".png") for x in png_name_list]
+        pred_imgs = [join(pred_dir, x + ".png") for x in png_name_list]
+    elif dataset_name == "CFD":
+        gt_imgs = [join(gt_dir, x + ".png") for x in png_name_list]
+        pred_imgs = [join(pred_dir, x + ".png") for x in png_name_list]
+    elif dataset_name == "DeepCrack":
+        gt_imgs = [join(gt_dir, x + ".png") for x in png_name_list]
+        pred_imgs = [join(pred_dir, x + ".png") for x in png_name_list]
+    elif dataset_name == "BCL":
+        gt_imgs = [join(gt_dir, x + ".jpg") for x in png_name_list]
+        pred_imgs = [join(pred_dir, x + ".png") for x in png_name_list]
+    else:
+        gt_imgs = [join(gt_dir, x + ".png") for x in png_name_list]
+        pred_imgs = [join(pred_dir, x + ".png") for x in png_name_list]
 
     # ------------------------------------------------#
     #   读取每一个（图片-标签）对
@@ -94,11 +107,11 @@ def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes):
         # ------------------------------------------------#
         #   读取一张图像分割结果，转化成numpy数组
         # ------------------------------------------------#
-        pred = np.array(Image.open(pred_imgs[ind]))
+        pred = np.array(Image.open(pred_imgs[ind]).convert('L'))
         # ------------------------------------------------#
         #   读取一张对应的标签，转化成numpy数组
         # ------------------------------------------------#
-        label = np.array(Image.open(gt_imgs[ind]))
+        label = np.array(Image.open(gt_imgs[ind]).convert('L'))
 
         # 如果图像分割结果与标签的大小不一样，这张图片就不计算
         if len(label.flatten()) != len(pred.flatten()):
@@ -150,7 +163,7 @@ def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes):
     # -----------------------------------------------------------------#
     print('===> mIoU: ' + str(round(np.nanmean(IoUs) * 100, 2)) + '; mPA: ' + str(
         round(np.nanmean(PA_Recall) * 100, 2)) + '; Accuracy: ' + str(round(per_Accuracy(hist) * 100, 2)))
-    return np.array(hist, np.int), IoUs, PA_Recall, Precision
+    return np.array(hist, np.int32), IoUs, PA_Recall, Precision
 
 
 def adjust_axes(r, t, fig, axes):
@@ -188,7 +201,7 @@ def draw_plot_func(values, name_classes, plot_title, x_label, output_path, tick_
 
 def show_results(miou_out_path, hist, IoUs, PA_Recall, Precision, name_classes, tick_font_size=12):
     draw_plot_func(IoUs, name_classes, "mIoU = {0:.2f}%".format(np.nanmean(IoUs) * 100), "Intersection over Union", \
-                   os.path.join(miou_out_path, "mIoU.png"), tick_font_size=tick_font_size, plt_show=True)
+                   os.path.join(miou_out_path, "mIoU.png"), tick_font_size=tick_font_size, plt_show=False)
     print("Save mIoU out to " + os.path.join(miou_out_path, "mIoU.png"))
 
     draw_plot_func(PA_Recall, name_classes, "mPA = {0:.2f}%".format(np.nanmean(PA_Recall) * 100), "Pixel Accuracy", \

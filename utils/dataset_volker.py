@@ -11,7 +11,7 @@ import numpy as np
 
 
 
-class ISBI_Loader(Dataset):
+class VolkerDataset(Dataset):
     def __init__(self, data_path):
         # 初始化函数，读取所有data_path下的图片
         self.data_path = data_path
@@ -67,7 +67,7 @@ class ISBI_Loader(Dataset):
 
     
 if __name__ == "__main__":
-    isbi_dataset = ISBI_Loader("../images/cracks")
+    isbi_dataset = VolkerDataset("../images/cracks")
     img,label = isbi_dataset[1]
     print(label.shape)
 
