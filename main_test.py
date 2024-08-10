@@ -126,7 +126,8 @@ def cal_miou(
         print(name_classes)
         hist, IoUs, PA_Recall, Precision = compute_mIoU(gt_dir, pred_dir, image_ids, num_classes,
                                                         name_classes,
-                                                        dataset_name=dataset_name
+                                                        dataset_name=dataset_name,
+                                                        miou_out_path=miou_out_path
                                                         )  # 执行计算mIoU的函数
         print("Get miou done.")
         show_results(miou_out_path, hist, IoUs,
@@ -134,24 +135,23 @@ def cal_miou(
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='APCGAN-AttuNet')
+    parser = argparse.ArgumentParser(description='Test')
     parser.add_argument('--iters', type=int, default=4000, help='number of iterations')
+    parser.add_argument('--expr', type=str, default="final13", help='experiment name')
+    parser.add_argument('--test_dir', type=str, default="datasets/stargan/final13/generate/4000/BCL_mask2BCL_image/images", help='test directory')
+    parser.add_argument('--pred_dir', type=str, default="test/final13/4000/BCL_image/pred", help='prediction directory')
+    parser.add_argument('--gt_dir', type=str, default="datasets/stargan/final13/generate/4000/BCL_mask2BCL_image/origin", help='ground truth directory')
+    parser.add_argument('--model_name', type=str, default="fcn", help='model name')
+    parser.add_argument('--model_path', type=str, default="models/BCL/origin/fcn-1_best_model.pth", help='model path')
+    parser.add_argument('--miou_out_path', type=str, default="test/final13/4000/BCL_image", help='mIoU output path')
     args = parser.parse_args()
 
-    EXPR = "final13"
-    DATASET = "BCL_image"
-    test_dir = f"datasets/stargan/{EXPR}/generate/{args.iters}/BCL_mask2{DATASET}/images"
-    pred_dir = f"test/{EXPR}/{args.iters}/{DATASET}/pred"
-    gt_dir = f"datasets/stargan/{EXPR}/generate/{args.iters}/BCL_mask2{DATASET}/origin"
-    model_name = "fcn"
-    model_path = "models/BCL/origin/fcn-1_best_model.pth"
-    miou_out_path = f"test/{EXPR}/{args.iters}/{DATASET}"
-    os.makedirs(pred_dir, exist_ok=True)
-    os.makedirs(miou_out_path, exist_ok=True)
+    os.makedirs(args.pred_dir, exist_ok=True)
+    os.makedirs(args.miou_out_path, exist_ok=True)
     cal_miou(
-        test_dir, pred_dir, gt_dir,
-        model_name=model_name,
-        dataset_name="",
-        model_path=model_path,
-        miou_out_path=miou_out_path
+        args.test_dir, args.pred_dir, args.gt_dir,
+        model_name=args.model_name,
+        dataset_name="", # 학습에서만 필요함
+        model_path=args.model_path,
+        miou_out_path=args.miou_out_path
     )

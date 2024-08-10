@@ -64,6 +64,19 @@ def per_class_iu(hist):
 def per_class_PA_Recall(hist):
     return np.diag(hist) / np.maximum(hist.sum(1), 1)
 
+def per_class_F1_Score(hist):
+    precision = np.diag(hist) / np.maximum(hist.sum(0), 1)
+    recall = np.diag(hist) / np.maximum(hist.sum(1), 1)
+    f1_score = 2 * (precision * recall) / np.maximum((precision + recall), 1e-5)
+    return f1_score
+
+def per_class_Dice_Score(hist):
+    tp = np.diag(hist)
+    fp = hist.sum(axis=0) - tp
+    fn = hist.sum(axis=1) - tp
+    dice_score = 2 * tp / np.maximum((2 * tp + fp + fn), 1e-5)
+    return dice_score
+
 
 def per_class_Precision(hist):
     return np.diag(hist) / np.maximum(hist.sum(0), 1)
@@ -73,7 +86,7 @@ def per_Accuracy(hist):
     return np.sum(np.diag(hist)) / np.maximum(np.sum(hist), 1)
 
 
-def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes, dataset_name=None):
+def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes, dataset_name=None, miou_out_path=None):
     print('Num classes', num_classes)
     # -----------------------------------------#
     #   创建一个全是0的矩阵，是一个混淆矩阵
@@ -100,25 +113,28 @@ def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes, dat
         gt_imgs = [join(gt_dir, x + ".png") for x in png_name_list]
         pred_imgs = [join(pred_dir, x + ".png") for x in png_name_list]
 
+    writer_list = []
+    writer_list.append(["Index", "GT_img_path", "Pred_img_path", "Iou", "Recall", "Precision", "F1", "Dice"])
+
     # ------------------------------------------------#
     #   读取每一个（图片-标签）对
     # ------------------------------------------------#
-    for ind in range(len(gt_imgs)):
+    for ind, (gt_img, pred_img) in enumerate(zip(gt_imgs, pred_imgs)):
         # ------------------------------------------------#
         #   读取一张图像分割结果，转化成numpy数组
         # ------------------------------------------------#
-        pred = np.array(Image.open(pred_imgs[ind]).convert('L'))
+        pred = np.array(Image.open(pred_img).convert('L'))
         # ------------------------------------------------#
         #   读取一张对应的标签，转化成numpy数组
         # ------------------------------------------------#
-        label = np.array(Image.open(gt_imgs[ind]).convert('L'))
+        label = np.array(Image.open(gt_img).convert('L'))
 
         # 如果图像分割结果与标签的大小不一样，这张图片就不计算
         if len(label.flatten()) != len(pred.flatten()):
             print(
                 'Skipping: len(gt) = {:d}, len(pred) = {:d}, {:s}, {:s}'.format(
-                    len(label.flatten()), len(pred.flatten()), gt_imgs[ind],
-                    pred_imgs[ind]))
+                    len(label.flatten()), len(pred.flatten()), gt_img,
+                    pred_img))
             continue
 
         # ------------------------------------------------#
@@ -130,6 +146,14 @@ def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes, dat
         pred = np.array([int(x) for x in pred.flatten()])
         pred[pred == 255] = 1
 
+        #   계산한 IoU, Recall, Precision 값을 리스트에 추가
+        result = fast_hist(label, pred, num_classes)
+        iou = np.nanmean(per_class_iu(result)[1])
+        recall = np.nanmean(per_class_PA_Recall(result)[1])
+        precision = np.nanmean(per_class_Precision(result)[1])
+        f1 = np.nanmean(per_class_F1_Score(result)[1])
+        dice = np.nanmean(per_class_Dice_Score(result)[1])
+        writer_list.append([ind, gt_img, pred_img, iou, recall, precision, f1, dice])
 
         # pred = np.array([int(x) for x in pred.flatten()])
         # hist += fast_hist(label.flatten(), pred, num_classes)
@@ -144,25 +168,40 @@ def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes, dat
                 100 * per_Accuracy(hist)
             )
             )
+
+    #   csv 파일로 결과 저장
+    csv_path = join(str(miou_out_path), "metrics.csv")
+    with open(csv_path, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerows(writer_list)
+    print("Save metrics to " + csv_path)
+
     # ------------------------------------------------#
     #   计算所有验证集图片的逐类别mIoU值
     # ------------------------------------------------#
     IoUs = per_class_iu(hist)
     PA_Recall = per_class_PA_Recall(hist)
     Precision = per_class_Precision(hist)
+    dice = np.nanmean(per_class_Dice_Score(hist))
     # ------------------------------------------------#
     #   逐类别输出一下mIoU值
     # ------------------------------------------------#
     for ind_class in range(num_classes):
         print('===>' + name_classes[ind_class] + ':\tIou-' + str(round(IoUs[ind_class] * 100, 2)) \
               + '; Recall (equal to the PA)-' + str(round(PA_Recall[ind_class] * 100, 2)) + '; Precision-' + str(
-            round(Precision[ind_class] * 100, 2)))
+            round(Precision[ind_class] * 100, 2))
+              + '; F1-' + str(round(per_class_F1_Score(hist)[ind_class] * 100, 2)) + '; Dice-' + str(
+            round(per_class_Dice_Score(hist)[ind_class] * 100, 2))
+        )
 
     # -----------------------------------------------------------------#
     #   在所有验证集图像上求所有类别平均的mIoU值，计算时忽略NaN值
     # -----------------------------------------------------------------#
     print('===> mIoU: ' + str(round(np.nanmean(IoUs) * 100, 2)) + '; mPA: ' + str(
-        round(np.nanmean(PA_Recall) * 100, 2)) + '; Accuracy: ' + str(round(per_Accuracy(hist) * 100, 2)))
+        round(np.nanmean(PA_Recall) * 100, 2)) + '; Accuracy: ' + str(round(per_Accuracy(hist) * 100, 2))
+          + '; mF1: ' + str(round(np.nanmean(per_class_F1_Score(hist)) * 100, 2)) + '; mDice: ' + str(
+        round(dice * 100, 2))
+        )
     return np.array(hist, np.int32), IoUs, PA_Recall, Precision
 
 
