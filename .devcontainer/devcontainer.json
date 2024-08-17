@@ -40,7 +40,8 @@
 				"mutantdino.resourcemonitor",
 				"ms-toolsai.tensorboard",
 				"ms-toolsai.datawrangler",
-				"github.copilot"
+				"github.copilot",
+				"janisdd.vscode-edit-csv"
 			]
 		}
 	},
