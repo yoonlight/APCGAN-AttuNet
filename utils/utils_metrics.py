@@ -159,15 +159,15 @@ def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes, dat
         # hist += fast_hist(label.flatten(), pred, num_classes)
         hist += fast_hist(label, pred, num_classes)
         # 每计算10张就输出一下目前已计算的图片中所有类别平均的mIoU值
-        if ind > 0 and ind % 10 == 0:
-            print('{:d} / {:d}: mIou-{:0.2f}%; mPA-{:0.2f}%; Accuracy-{:0.2f}%'.format(
-                ind,
-                len(gt_imgs),
-                100 * np.nanmean(per_class_iu(hist)),
-                100 * np.nanmean(per_class_PA_Recall(hist)),
-                100 * per_Accuracy(hist)
-            )
-            )
+        # if ind > 0 and ind % 10 == 0:
+        #     print('{:d} / {:d}: mIou-{:0.2f}%; mPA-{:0.2f}%; Accuracy-{:0.2f}%'.format(
+        #         ind,
+        #         len(gt_imgs),
+        #         100 * np.nanmean(per_class_iu(hist)),
+        #         100 * np.nanmean(per_class_PA_Recall(hist)),
+        #         100 * per_Accuracy(hist)
+        #     )
+        #     )
 
     #   csv 파일로 결과 저장
     csv_path = join(str(miou_out_path), "metrics.csv")
@@ -182,7 +182,7 @@ def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes, dat
     IoUs = per_class_iu(hist)
     PA_Recall = per_class_PA_Recall(hist)
     Precision = per_class_Precision(hist)
-    dice = np.nanmean(per_class_Dice_Score(hist))
+    dice = per_class_Dice_Score(hist)
     # ------------------------------------------------#
     #   逐类别输出一下mIoU值
     # ------------------------------------------------#
@@ -200,9 +200,9 @@ def compute_mIoU(gt_dir, pred_dir, png_name_list, num_classes, name_classes, dat
     print('===> mIoU: ' + str(round(np.nanmean(IoUs) * 100, 2)) + '; mPA: ' + str(
         round(np.nanmean(PA_Recall) * 100, 2)) + '; Accuracy: ' + str(round(per_Accuracy(hist) * 100, 2))
           + '; mF1: ' + str(round(np.nanmean(per_class_F1_Score(hist)) * 100, 2)) + '; mDice: ' + str(
-        round(dice * 100, 2))
+        round(np.nanmean(dice) * 100, 2))
         )
-    return np.array(hist, np.int32), IoUs, PA_Recall, Precision
+    return np.array(hist, np.int32), IoUs, PA_Recall, Precision, dice
 
 
 def adjust_axes(r, t, fig, axes):

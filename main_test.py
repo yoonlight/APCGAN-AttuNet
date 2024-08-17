@@ -74,7 +74,8 @@ def cal_miou(
     model_name="unet",
     dataset_name="BCL",
     model_path="unet_BCL_best_model.pth",
-    miou_out_path=""
+    miou_out_path="",
+    net=None
 ):
     miou_mode = 0
     num_classes = 2
@@ -84,15 +85,16 @@ def cal_miou(
         if not os.path.exists(pred_dir):
             os.makedirs(pred_dir)
 
-        print("Load model.")
         device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        net = get_model(model_name)
-        net = nn.DataParallel(net, device_ids=[0, 1])
-        net.to(device=device)
-        net.load_state_dict(torch.load(
-            model_path, map_location=device))
+        if net is None:
+            print("Load model.")
+            net = get_model(model_name)
+            net = nn.DataParallel(net, device_ids=[0, 1])
+            net.to(device=device)
+            net.load_state_dict(torch.load(
+                model_path, map_location=device))
+            print("Load model done.")
         net.eval()
-        print("Load model done.")
 
         img_names = os.listdir(test_dir)
 
@@ -100,7 +102,7 @@ def cal_miou(
 
         print("Get predict result.")
         times = []
-        for image_id in tqdm(image_ids):
+        for image_id in image_ids:
             image_path, label_path = get_image_and_label_paths(
                 dataset_name, test_dir, gt_dir, image_id)
             label = preprocess_label(label_path)
@@ -118,20 +120,21 @@ def cal_miou(
         print("Get predict result done.")
         print(np.mean(times))
 
-    if miou_mode == 0 or miou_mode == 2:
-        print("Get miou.")
-        print(gt_dir)
-        print(pred_dir)
-        print(num_classes)
-        print(name_classes)
-        hist, IoUs, PA_Recall, Precision = compute_mIoU(gt_dir, pred_dir, image_ids, num_classes,
-                                                        name_classes,
-                                                        dataset_name=dataset_name,
-                                                        miou_out_path=miou_out_path
-                                                        )  # 执行计算mIoU的函数
-        print("Get miou done.")
-        show_results(miou_out_path, hist, IoUs,
-                     PA_Recall, Precision, name_classes)
+    # if miou_mode == 0 or miou_mode == 2:
+    print("Get miou.")
+    print(gt_dir)
+    print(pred_dir)
+    print(num_classes)
+    print(name_classes)
+    hist, IoUs, PA_Recall, Precision, dice = compute_mIoU(gt_dir, pred_dir, image_ids, num_classes,
+                                                    name_classes,
+                                                    dataset_name=dataset_name,
+                                                    miou_out_path=miou_out_path
+                                                    )  # 执行计算mIoU的函数
+    print("Get miou done.")
+    # show_results(miou_out_path, hist, IoUs,
+    #              PA_Recall, Precision, name_classes)
+    return IoUs, PA_Recall, Precision, dice
 
 
 if __name__ == '__main__':

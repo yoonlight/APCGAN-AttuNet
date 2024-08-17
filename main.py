@@ -46,7 +46,7 @@ def validate_one_epoch(net, val_loader, criterion, device, model_name):
     return val_loss
 
 
-def train_net(net, device, dataset_name, model_name, data_path, val_data_path, result_path, dataset, expr_name, epochs=40, batch_size=1, lr=0.00001):
+def train_net(net, device, dataset_name, model_name, data_path, val_data_path, result_path, dataset, expr_name, epochs=40, batch_size=1, lr=0.00001, weight_decay=1e-8):
     model_file = f'./models/{dataset}/{expr_name}_best_model.pth'
     test_dir = f"datasets/seg/{dataset}/test/images"
     pred_dir = f"datasets/seg/{dataset}/{expr_name}/{expr_name}_images"
@@ -57,15 +57,20 @@ def train_net(net, device, dataset_name, model_name, data_path, val_data_path, r
         dataset_name, data_path, val_data_path, batch_size)
     per_epoch_num = train_ds_len / batch_size
 
-    optimizer = optim.Adam(net.parameters(), lr=lr, weight_decay=1e-8)
+    optimizer = optim.Adam(net.parameters(), lr=lr, weight_decay=weight_decay)
     criterion = nn.BCEWithLogitsLoss()
-    best_loss = float('inf')
+    # best_loss = float('inf')
+    best_iou = float('inf')
 
     train_losses = []
     val_losses = []
+    val_iou_list = []
+    val_recall_list = []
+    val_precision_list = []
+    val_dice_list = []
 
     starttime = time.time()
-    with tqdm(total=epochs*per_epoch_num) as pbar:
+    with tqdm(total=epochs) as pbar:
         for epoch in range(epochs):
             train_loss = train_one_epoch(
                 net, train_loader, optimizer, criterion, device, model_name)
@@ -75,18 +80,30 @@ def train_net(net, device, dataset_name, model_name, data_path, val_data_path, r
             train_losses.append(train_loss)
             val_losses.append(val_loss)
 
-            if val_loss < best_loss:
-                best_loss = val_loss
+            # if val_loss < best_loss:
+            #     best_loss = val_loss
+            #     torch.save(net.state_dict(), model_file)
+
+            # if epoch % 10 == 0:
+            if epoch == 0:
                 torch.save(net.state_dict(), model_file)
 
-            if epoch % 10 == 0:
-                cal_miou(test_dir, pred_dir, gt_dir, model_name=model_name,
-                         dataset_name=dataset_name, model_path=model_file, miou_out_path=miou_out_path)
-            pbar.set_postfix(loss=train_loss, val_loss=val_loss)
-            pbar.update(per_epoch_num)
+            val_iou, val_recall, val_precision, val_dice = cal_miou(test_dir, pred_dir, gt_dir, model_name=model_name,
+                         dataset_name=dataset_name, model_path=model_file, miou_out_path=miou_out_path, net=net)
+            val_iou_list.append(val_iou[1])
+            val_recall_list.append(val_recall[1])
+            val_precision_list.append(val_precision[1])
+            val_dice_list.append(val_dice[1])
+            if best_iou < val_iou[1]:
+                best_iou = val_iou[1]
+                torch.save(net.state_dict(), model_file)
+
+            pbar.set_postfix(loss=train_loss, val_loss=val_loss, val_iou=val_iou[1])
+            pbar.update(epoch)
     endtime = time.time()
 
-    loss_dict = {'train_loss': train_losses, 'val_loss': val_losses}
+    loss_dict = {'train_loss': train_losses, 'val_loss': val_losses, 'val_iou': val_iou_list,
+                 'val_recall': val_recall_list, 'val_precision': val_precision_list, 'val_dice': val_dice_list}
     loss_df = pd.DataFrame(loss_dict)
     loss_df.to_csv(f'{result_path}/train_loss.csv')
     print('trainingtime:', endtime - starttime)
@@ -107,6 +124,8 @@ def parse_args():
     parser.add_argument('--lr', type=float, default=1e-4, help='Learning rate')
     parser.add_argument('--model_name', type=str,
                         default='fcn', help='Name of the model')
+    parser.add_argument('--weight_decay', type=float, default=1e-8,
+                        help='Weight decay for the optimizer')
     return parser.parse_args()
 
 
@@ -115,7 +134,8 @@ def main():
 
     net = get_model(args.model_name)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    net = nn.DataParallel(net, device_ids=[0, 1])
+    net = nn.DataParallel(net, device_ids=[0, 1, 2])
+    # net.load_state_dict(torch.load('/workspaces/APCGAN-AttuNet/models/BCL/iou6/unet-1_best_model.pth'))
     net.to(device=device)
 
     data_path = f"datasets/seg/{args.dataset_dir}/train"
@@ -125,7 +145,7 @@ def main():
     os.makedirs(f'models/{args.dataset_dir}', exist_ok=True)
 
     train_net(net, device, args.dataset, args.model_name, data_path, val_data_path, result_path,
-              args.dataset_dir, args.expr_name, epochs=args.epochs, batch_size=args.batch_size, lr=args.lr)
+              args.dataset_dir, args.expr_name, epochs=args.epochs, batch_size=args.batch_size, lr=args.lr, weight_decay=args.weight_decay)
 
 
 if __name__ == "__main__":
